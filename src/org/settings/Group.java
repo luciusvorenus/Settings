@@ -7,20 +7,20 @@ import java.util.Map;
 
 /**
  *
- * @author miguel
+ * @author Miguel Martins
  */
 public final class Group extends Element {
     
-    /*  */
+    /* Holds all sun groups */
     private final Map<String,Group> subGroups = new LinkedHashMap<>();
     
-    /*  */
+    /* Holds all keys/values */
     private final Map<String,Object> keys     = new LinkedHashMap<>();
     
-    /*  */
+    /* Reference to the main data container */
     private Buffer buffer;
     
-    /*  */
+    /* Reference to the group changer */
     private GroupChanger groupChanger;
     
     
