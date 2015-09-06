@@ -185,6 +185,10 @@ public final class Group extends Element {
      */
     public void deleteSubGroup(final String groupName) {
         final String absolutePath = this.path + groupName + "/";
+        if (this.subGroups.containsKey(absolutePath) == false) {
+            throw new GcfException("no such group to delete: \"" + getPath() + groupName + "/\"");
+        }
+        
         this.subGroups.remove(absolutePath);
     }
     
