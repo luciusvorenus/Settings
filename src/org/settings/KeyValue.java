@@ -85,11 +85,8 @@ final class KeyValue extends Element {
         }
         
         this.key = parts[0].trim();
-        if (this.key.contains(" ") || 
-            this.key.contains(""+GcfUtils.COMMENT_CHAR) ||
-            this.key.contains(""+GcfUtils.GROUP_RBRACE) ||
-            this.key.contains(""+GcfUtils.GROUP_LBRACE)) {
-            throw new GcfException("wrong character in key at line " + (tokener.lineNumber()-1));
+        if (GcfUtils.keyContainsIllegalCharacter(this.key)) {
+            throw new GcfException("illegal character in key at line " + (tokener.lineNumber()-1));
         }
         
         final String valuePart = parts[1].trim();
@@ -105,6 +102,10 @@ final class KeyValue extends Element {
         }
         else {
             final String realValue = (indexOfComment!=-1) ? valuePart.substring(0, indexOfComment).trim() : valuePart;
+            if (GcfUtils.valueContainsIllegalCharacter(realValue)) {
+                throw new GcfException("illegal character in value in line at "+(tokener.lineNumber()-1));
+            }
+            
             this.value = parseValue(tokener,realValue);
         }
     }
