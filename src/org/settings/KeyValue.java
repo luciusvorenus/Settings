@@ -90,7 +90,6 @@ final class KeyValue extends Element {
         }
         
         final String valuePart = parts[1].trim();
-        final int indexOfComment = valuePart.indexOf(GcfUtils.COMMENT_CHAR);
         if (valuePart.startsWith(""+GcfUtils.GLOBAL_VAR_CHAR)) {
             final String str = valuePart.substring(1);
             if (!str.startsWith(""+GcfUtils.GLOBAL_VAR_LBRACE) || !str.endsWith(""+GcfUtils.GLOBAL_VAR_RBRACE)) {
@@ -101,6 +100,7 @@ final class KeyValue extends Element {
             this.value = this.buffer.getGlobalValue(globalKey);
         }
         else {
+            final int indexOfComment = valuePart.indexOf(GcfUtils.COMMENT_CHAR);
             final String realValue = (indexOfComment!=-1) ? valuePart.substring(0, indexOfComment).trim() : valuePart;
             if (GcfUtils.valueContainsIllegalCharacter(realValue)) {
                 throw new GcfException("illegal character in value in line at "+(tokener.lineNumber()-1));
@@ -133,8 +133,7 @@ final class KeyValue extends Element {
                     } catch(NumberFormatException ex4) {
                         if (strValue.length()>0) {
                             if (!strValue.startsWith("\"") || !strValue.endsWith("\"")) {
-                                final String msg = "mal formed string at line "+(tok.lineNumber()-1);
-                                throw new GcfException(msg);
+                                throw new GcfException("mal formed string at line "+(tok.lineNumber()-1));
                             }
                             obj = strValue.substring(1, strValue.length()-1).trim();
                         }
