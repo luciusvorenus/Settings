@@ -24,7 +24,7 @@ abstract class Element {
      * should be placed here.
      * @param tokener reference to the file stream tokener
      */
-    abstract void parse(final GcfParser parser);
+    abstract void parse(final Parser parser);
     
     /**
      * Gets the element's name.

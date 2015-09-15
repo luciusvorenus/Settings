@@ -29,7 +29,7 @@ public final class Group extends Element {
      * @param parent
      * @param tok 
      */
-    Group(final String parent, final GcfParser parser, final Buffer buffer, final GroupChanger groupChanger) {
+    Group(final String parent, final Parser parser, final Buffer buffer, final GroupChanger groupChanger) {
         this.parent = parent;
         this.buffer = buffer;
         this.groupChanger = groupChanger;
@@ -299,7 +299,7 @@ public final class Group extends Element {
      * @param tokener 
      */
     @Override
-    void parse(final GcfParser parser) {
+    void parse(final Parser parser) {
         // Group header
         parser.match(TokenType.GROUP_LBRACE);
         this.name = parser.match(TokenType.GROUP_NAME);
@@ -319,7 +319,7 @@ public final class Group extends Element {
         this.buffer.addGroup(this);
     }
 
-    private void groupContent(final GcfParser parser) {
+    private void groupContent(final Parser parser) {
         while(!parser.lookahead.type.equals(TokenType.EOF)) {
             if (parser.lookahead.type.equals(TokenType.KEY)) {
                 final KeyValue kv = new KeyValue(parser,this.buffer);

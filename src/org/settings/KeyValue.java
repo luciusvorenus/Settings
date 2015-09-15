@@ -34,7 +34,7 @@ final class KeyValue extends Element {
      * @param buffer reference to the data buffer
      * @throws  GcfException
      */
-    /*package-privat*/ KeyValue(final GcfParser parser,final Buffer buffer) throws GcfException {
+    /*package-privat*/ KeyValue(final Parser parser,final Buffer buffer) throws GcfException {
         this.buffer = buffer;
         parse(parser);
     }
@@ -70,7 +70,7 @@ final class KeyValue extends Element {
      * @throws GcfException 
      */
     @Override
-    /*package-privat*/ void parse(final GcfParser parser) throws GcfException {
+    /*package-privat*/ void parse(final Parser parser) throws GcfException {
         final String keyStr = parser.match(TokenType.KEY);
         parser.match(TokenType.EQUAL_SIGN);
         final String valueStr = parser.match(TokenType.VALUE);
