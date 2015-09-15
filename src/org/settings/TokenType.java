@@ -20,11 +20,7 @@ public enum TokenType {
     
     EQUAL_SIGN("EQUAL_SIGN"),
     
-    VALUE("VALUE"),
-    
-    COMMENT("COMMENT"),
-    
-    COMMENTTEXT("COMMENTTEXT");
+    VALUE("VALUE");
     
     
     private final String category;
