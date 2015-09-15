@@ -28,8 +28,8 @@ abstract class Parser {
     }
     
     String match(final TokenType type) {
-        if (type.equals(lookahead.type)) {
-            final String text = lookahead.text;
+        if (type.equals(lookahead.getType())) {
+            final String text = lookahead.getText();
             consume();
             return text;
         }

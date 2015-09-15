@@ -17,9 +17,9 @@ class GcfParser extends Parser {
     }
     
     void body() {
-        while(!lookahead.type.equals(TokenType.EOF)) {
-            if (lookahead.type.equals(TokenType.GROUP_LBRACE) && 
-                !LT(2).type.equals(TokenType.GROUP_FSLASH)) {
+        while(!lookahead.getType().equals(TokenType.EOF)) {
+            if (lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
+                !LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 group();
             }
             else {

@@ -320,18 +320,18 @@ public final class Group extends Element {
     }
 
     private void groupContent(final Parser parser) {
-        while(!parser.lookahead.type.equals(TokenType.EOF)) {
-            if (parser.lookahead.type.equals(TokenType.KEY)) {
+        while(!parser.lookahead.getType().equals(TokenType.EOF)) {
+            if (parser.lookahead.getType().equals(TokenType.KEY)) {
                 final KeyValue kv = new KeyValue(parser,this.buffer);
                 this.keys.putIfAbsent(kv.getKey(), kv.getValue());
             }
-            else if (parser.lookahead.type.equals(TokenType.GROUP_LBRACE) && 
-                     !parser.LT(2).type.equals(TokenType.GROUP_FSLASH)) {
+            else if (parser.lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
+                     !parser.LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 final Group subGroup = new Group(this.path,parser,this.buffer,this.groupChanger);
                 this.subGroups.putIfAbsent(subGroup.getPath(),subGroup);
             }
-            else if (parser.lookahead.type.equals(TokenType.GROUP_LBRACE) && 
-                     parser.LT(2).type.equals(TokenType.GROUP_FSLASH)) {
+            else if (parser.lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
+                     parser.LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 break;
             }
             else {
