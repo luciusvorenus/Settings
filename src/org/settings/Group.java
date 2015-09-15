@@ -29,11 +29,11 @@ public final class Group extends Element {
      * @param parent
      * @param tok 
      */
-    Group(final String parent, final Buffer buffer, final GroupChanger groupChanger, final Tokener tok) {
+    Group(final String parent, final GcfParser parser, final Buffer buffer, final GroupChanger groupChanger) {
         this.parent = parent;
         this.buffer = buffer;
         this.groupChanger = groupChanger;
-        parse(tok);
+        parse(parser);
     }
     
     /**
@@ -299,100 +299,45 @@ public final class Group extends Element {
      * @param tokener 
      */
     @Override
-    void parse(final Tokener tokener) {
-        // set tokener to after the '['
-        tokener.back();
+    void parse(final GcfParser parser) {
+        // Group header
+        parser.match(TokenType.GROUP_LBRACE);
+        this.name = parser.match(TokenType.GROUP_NAME);
+        parser.match(TokenType.GROUP_RBRACE);
+        this.path = this.parent + this.name + "/";
         
-        // parse group header
-        parseGroupHeader(tokener);
+        // Group content
+        groupContent(parser);
         
-        // parse possible keys and sub groups
-        parseGroupContent(tokener);
+        // Group footer
+        parser.match(TokenType.GROUP_LBRACE);
+        parser.match(TokenType.GROUP_FSLASH);
+        parser.match(TokenType.GROUP_NAME);
+        parser.match(TokenType.GROUP_RBRACE);
         
         // add this group to the global data container
         this.buffer.addGroup(this);
     }
-        
-    /**
-     * 
-     * @param tok
-     * @param groupHeader 
-     */
-    private void parseGroupHeader(final Tokener tok) {
-        final String groupHeader = tok.nextUntilEndOfLine();
-        
-        if (groupHeader.contains(""+GcfUtils.GROUP_RBRACE) == false) {
-            throw new GcfException("Group header must end with an \'"+GcfUtils.GROUP_RBRACE+"\'");
-        }
-        
-        final String[] parts = groupHeader.split(""+GcfUtils.GROUP_RBRACE);
-        
-        // check if rest syntax is correct
-        // check if there is text to the right and if so, if it is a comment
-        if (parts.length > 1) {
-            final String commentSection = parts[1].trim();
-            if (!commentSection.startsWith(""+GcfUtils.COMMENT_CHAR)) {
-                throw new GcfException("comments to the right of a group header must start with \'"+GcfUtils.COMMENT_CHAR+"\'");
-            }
-        }
-        
-        // Set and check the group's name
-        this.name = parts[0].trim();
-        if (this.name.isEmpty()) {
-            throw new GcfException("No name of group set at line "+(tok.lineNumber()-1));
-        }
-        
-        // set the absolute path to the group
-        this.path = this.parent + this.name + "/";
-    }
-    
-    /**
-     * 
-     * @param tok
-     * @param dataBuffer 
-     */
-    private void parseGroupContent(final Tokener tok) {
-        boolean footerParsed = false;
-        while(tok.eof() == false) {
-            final char next = tok.nextNonEmpty();
-            
-            if (next == GcfUtils.COMMENT_CHAR) {
-                tok.nextUntilEndOfLine();
-            }
-            else if (Character.isLetter(next)) {
-                final KeyValue kv = new KeyValue(tok,this.buffer);
+
+    private void groupContent(final GcfParser parser) {
+        while(!parser.lookahead.type.equals(TokenType.EOF)) {
+            if (parser.lookahead.type.equals(TokenType.KEY)) {
+                final KeyValue kv = new KeyValue(parser,this.buffer);
                 this.keys.putIfAbsent(kv.getKey(), kv.getValue());
             }
-            else if (next == GcfUtils.GROUP_LBRACE) {
-                final char afterNext = tok.next();
-                if (afterNext != GcfUtils.GROUP_END_CHAR) {
-                    final Group subGroup = new Group(this.path,this.buffer,this.groupChanger,tok);
-                    this.subGroups.putIfAbsent(subGroup.getPath(),subGroup);
-                }
-                else {
-                    parseGroupFooter(tok);
-                    footerParsed = true;
-                    break;
-                }
+            else if (parser.lookahead.type.equals(TokenType.GROUP_LBRACE) && 
+                     !parser.LT(2).type.equals(TokenType.GROUP_FSLASH)) {
+                final Group subGroup = new Group(this.path,parser,this.buffer,this.groupChanger);
+                this.subGroups.putIfAbsent(subGroup.getPath(),subGroup);
+            }
+            else if (parser.lookahead.type.equals(TokenType.GROUP_LBRACE) && 
+                     parser.LT(2).type.equals(TokenType.GROUP_FSLASH)) {
+                break;
+            }
+            else {
+                throw new Error("wrong token: " + parser.lookahead);
             }
         }
-        
-        if (!footerParsed) {
-            throw new GcfException("group \""+this.path+"\" not closed correctly at line "+(tok.lineNumber()));
-        }
     }
-
-    /**
-     * 
-     * @param tok 
-     */
-    private void parseGroupFooter(final Tokener tok) {
-        final String footer = tok.nextUntil(GcfUtils.GROUP_RBRACE);
-        if (!footer.equals(this.name)) {
-            throw new GcfException("Group \""+this.name+"\" not correctly closed at line "+(tok.lineNumber()));
-        }
-        
-    }
-
 }
 

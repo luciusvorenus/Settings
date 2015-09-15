@@ -34,9 +34,9 @@ final class KeyValue extends Element {
      * @param buffer reference to the data buffer
      * @throws  GcfException
      */
-    /*package-privat*/ KeyValue(final Tokener tokener,final Buffer buffer) throws GcfException {
+    /*package-privat*/ KeyValue(final GcfParser parser,final Buffer buffer) throws GcfException {
         this.buffer = buffer;
-        parse(tokener);
+        parse(parser);
     }
     
     /**
@@ -70,44 +70,13 @@ final class KeyValue extends Element {
      * @throws GcfException 
      */
     @Override
-    /*package-privat*/ void parse(final Tokener tokener) throws GcfException {
-        tokener.back(); // set tokener to before the first key character
+    /*package-privat*/ void parse(final GcfParser parser) throws GcfException {
+        final String keyStr = parser.match(TokenType.KEY);
+        parser.match(TokenType.EQUAL_SIGN);
+        final String valueStr = parser.match(TokenType.VALUE);
         
-        final String line = tokener.nextUntilEndOfLine();
-        
-        if (line.contains("=") == false) {
-            throw new GcfException("key/value syntax: \"key = some_value\"");
-        }
-        
-        final String[] parts = line.split("=");
-        if (parts.length != 2) {
-            throw new GcfException("key/value syntax: \"key = some_value\"");
-        }
-        
-        this.key = parts[0].trim();
-        if (GcfUtils.keyContainsIllegalCharacter(this.key)) {
-            throw new GcfException("illegal character in key at line " + (tokener.lineNumber()-1));
-        }
-        
-        final String valuePart = parts[1].trim();
-        if (valuePart.startsWith(""+GcfUtils.GLOBAL_VAR_CHAR)) {
-            final String str = valuePart.substring(1);
-            if (!str.startsWith(""+GcfUtils.GLOBAL_VAR_LBRACE) || !str.endsWith(""+GcfUtils.GLOBAL_VAR_RBRACE)) {
-                throw new GcfException("wrong syntax in global key reference at line "+(tokener.lineNumber()-1));
-            }
-            
-            final String globalKey = str.substring(1, str.length()-1).trim();
-            this.value = this.buffer.getGlobalValue(globalKey);
-        }
-        else {
-            final int indexOfComment = valuePart.indexOf(GcfUtils.COMMENT_CHAR);
-            final String realValue = (indexOfComment!=-1) ? valuePart.substring(0, indexOfComment).trim() : valuePart;
-            if (GcfUtils.valueContainsIllegalCharacter(realValue)) {
-                throw new GcfException("illegal character in value in line at "+(tokener.lineNumber()-1));
-            }
-            
-            this.value = parseValue(tokener,realValue);
-        }
+        this.key = keyStr;
+        this.value = parseValue(valueStr);
     }
     
     /**
@@ -117,7 +86,7 @@ final class KeyValue extends Element {
      * @return the parsed value as an <code>Object</code>
      * @throws GcfException
      */
-    /*package-privat*/ Object parseValue(final Tokener tok,final String strValue) throws GcfException {
+    /*package-privat*/ Object parseValue(final String strValue) throws GcfException {
         Object obj = null;
         try {
             obj = Integer.parseInt(strValue);
@@ -133,7 +102,7 @@ final class KeyValue extends Element {
                     } catch(NumberFormatException ex4) {
                         if (strValue.length()>0) {
                             if (!strValue.startsWith("\"") || !strValue.endsWith("\"")) {
-                                throw new GcfException("mal formed string at line "+(tok.lineNumber()-1));
+                                throw new GcfException("mal formed string");
                             }
                             obj = strValue.substring(1, strValue.length()-1).trim();
                         }

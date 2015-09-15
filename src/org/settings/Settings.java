@@ -67,7 +67,9 @@ public class Settings {
      * Opens and parses the file content.
      */
     private void open() {
-        final Parser parser = new Parser(this.file,this.buffer,this.groupChanger);
+        final Lexer lexer = new GcfLexer(this.file);
+        final GcfParser parser = new GcfParser(lexer, 2, this.buffer, this.groupChanger);
+        parser.body();
     }
     
     /**
