@@ -9,7 +9,6 @@ import java.util.Map;
  * This class defines a wrapper around the map that holds all groups 
  * per absolute group path.
  * It defines convinience methods to make data handling more easy and readable.
- * @author Miguel Martins
  */
 final class Buffer {
     

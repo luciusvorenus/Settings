@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * 
- * @author Miguel Martins
+ * Main class to handle gcf-configutation files.
  */
 public class Settings {
 
@@ -65,6 +64,7 @@ public class Settings {
     
     /**
      * Opens and parses the file content.
+     * The file is parsed with a LL(2) parser.
      */
     private void open() {
         final Lexer lexer = new GcfLexer(this.file);
@@ -73,7 +73,7 @@ public class Settings {
     }
     
     /**
-     * Gets 
+     * Gets a group by its name or full path.
      * @param absGroupPath the absolute path of the group requested
      * @return the group requested with respect to the absolute path
      */

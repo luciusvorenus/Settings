@@ -8,7 +8,6 @@ import java.io.IOException;
 /**
  * Writes the content of the data buffer in a formatted gcf file format.
  * All comments are lost since the are not saved in any form.
- * @author Miguel Cardoso Martins
  */
 class GcfWriter {
     

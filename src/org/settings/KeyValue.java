@@ -13,7 +13,6 @@ package org.settings;
  *         // do something as a string
  *     }
  * </pre>
- * @author Miguel Cardoso Martins
  */
 final class KeyValue extends Element {
     
@@ -23,9 +22,6 @@ final class KeyValue extends Element {
     /* The value */
     private Object value;
     
-    /* Reference to the data buffer */
-    private final Buffer buffer;
-    
     
     /**
      * Creates an instance of a KeyValue.
@@ -34,8 +30,7 @@ final class KeyValue extends Element {
      * @param buffer reference to the data buffer
      * @throws  GcfException
      */
-    /*package-privat*/ KeyValue(final Parser parser,final Buffer buffer) throws GcfException {
-        this.buffer = buffer;
+    /*package-privat*/ KeyValue(final Parser parser) throws GcfException {
         parse(parser);
     }
     
@@ -66,7 +61,7 @@ final class KeyValue extends Element {
     /**
      * Parses the KeyValue components.
      * Comments are ignored, both above and to the right of the KeyValue.
-     * @param tokener reference to the file stream tokener
+     * @param parser reference
      * @throws GcfException 
      */
     @Override

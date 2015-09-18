@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 /**
  * Helper class to assist in the change groups and formatting of 
  * their paths.
- * @author Miguel Cardoso Martins
  */
 final class GroupChanger {
     
@@ -100,7 +99,7 @@ final class GroupChanger {
      * @param path the path to be checked
      * @return true if input path is absolut
      */
-    private boolean isPathAbsolute(final String path) {
+    boolean isPathAbsolute(final String path) {
         return path.startsWith("/");
     }
     

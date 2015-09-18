@@ -1,8 +1,7 @@
 package org.settings;
 
 /**
- *
- * @author Miguel Cardoso Martins
+ * Definition of all important tokens in the gcf file format.
  */
 public enum TokenType {
     
@@ -23,13 +22,13 @@ public enum TokenType {
     VALUE("VALUE");
     
     
-    private final String category;
+    private final String longName;
     TokenType(final String category) {
-        this.category = category;
+        this.longName = category;
     }
     
-    public String getCategory() {
-        return this.category;
+    public String getLongName() {
+        return this.longName;
     }
     
 }

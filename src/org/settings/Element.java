@@ -5,7 +5,6 @@ package org.settings;
  * An element can be a KeyValue, a Group or any other 
  * construct.
  * This abstract class defines basic fields and methods.
- * @author Miguel Cardoso Martins
  */
 abstract class Element {
     
