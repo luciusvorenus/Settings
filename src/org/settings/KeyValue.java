@@ -1,5 +1,7 @@
 package org.settings;
 
+import java.util.Objects;
+
 /**
  * Defines a key-value pair in the configuration file.
  * A key-value in the gcf configuration format is composed
@@ -30,7 +32,9 @@ final class KeyValue extends Element {
      * @param buffer reference to the data buffer
      * @throws  GcfException
      */
-    /*package-privat*/ KeyValue(final Parser parser) throws GcfException {
+    /*package-privat*/ KeyValue(final String parent, final Parser parser) throws GcfException {
+        this.parent = parent;
+        this.path = parent;
         parse(parser);
     }
     
@@ -72,6 +76,8 @@ final class KeyValue extends Element {
         
         this.key = keyStr;
         this.value = parseValue(valueStr);
+        
+        this.name = this.key;
     }
     
     /**
@@ -137,6 +143,28 @@ final class KeyValue extends Element {
             throw new NumberFormatException(value + " cannot be parsed as boolean");
         }
         return boolValue;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.key);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        final KeyValue other = (KeyValue) obj;
+        return this.key.equals(other.key);
     }
     
 }
