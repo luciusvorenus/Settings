@@ -57,15 +57,14 @@ class GcfWriter {
         final String absGroupName = group.getPath();
 
         if (absGroupName.equals("/")) {
-            writeSubGroups(writer, group, absGroupName, level);
+            writeSubGroups(writer, group, level);
         }
         else {            
-            final String[] elements = absGroupName.split("/");
-            final String groupName = elements[(elements.length - 1)];
+            final String groupName = group.getName();
             try {
                 writeGroupHead(writer, groupName, prefix);
                 writeKeys(writer, group, prefix);
-                writeSubGroups(writer, group, absGroupName, level+1);
+                writeSubGroups(writer, group, level+1);
                 writeGroupFoot(writer, groupName, prefix);
             } catch (IOException ex) {
                 throw new GcfException("Problem writing group: " + groupName);
@@ -118,7 +117,7 @@ class GcfWriter {
                          getStringRepresentation(group.readValue(key)) + 
                          "\n");
         }
-    }  
+    }
     
     /**
      * Writes the sub groups of the current group
@@ -130,16 +129,9 @@ class GcfWriter {
     private void writeSubGroups(
             final BufferedWriter writer,
             final Group group,
-            final String absGroupName,
             final int level
             ) {
-        Group currentGroup;
-        String name;
-        for (final Group subGroup : group.childGroups()) {
-            name = absGroupName + subGroup.getName() + "/";
-            currentGroup = this.buffer.getGroup(name);
-            writeGroup(writer, currentGroup, level);
-        }
+        group.childGroups().forEach(g -> writeGroup(writer, g, level));
     }
 
     /**
