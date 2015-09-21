@@ -1,8 +1,11 @@
 package org.settings;
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Holds all parsed data.
@@ -112,5 +115,29 @@ final class Buffer {
         }
         
         return this.content.get(absoluteGroupPath);
+    }
+    
+    /**
+     * Gets all subgroups for specified path.
+     * @param groupPath the absolute group path
+     * @return unmodifiable collection of sub groups
+     */
+    Collection<Group> subGroupsForPath(final String groupPath) {
+        return Collections.unmodifiableCollection(
+            this.content
+                .entrySet()
+                .stream()
+                .map(e -> e.getValue())
+                .filter(g -> g.getParent().equals(groupPath))
+                .collect(Collectors.toList())
+        );
+    }
+    
+    /**
+     * Deletes the subgroup and all its subgroups for the specified path.
+     * @param groupPath absolute group path
+     */
+    void deleteSubGroup(final String groupPath) {
+        this.content.entrySet().removeIf(e -> e.getKey().startsWith(groupPath));
     }
 }

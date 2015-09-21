@@ -12,11 +12,8 @@ import java.util.Map;
  */
 public final class Group extends Element {
     
-    /* Holds all sub groups */
-    private final Map<String,Group> subGroups = new LinkedHashMap<>();
-    
     /* Holds all keys/values */
-    private final Map<String,Object> keys     = new LinkedHashMap<>();
+    private final Map<String,Object> keys = new LinkedHashMap<>();
     
     /* Reference to the main data container */
     private Buffer buffer;
@@ -64,7 +61,7 @@ public final class Group extends Element {
      * @return the subgroups
      */
     public Collection<Group> childGroups() {
-        return Collections.unmodifiableCollection(this.subGroups.values());
+        return this.buffer.subGroupsForPath(this.path);
     }
     
     /**
@@ -198,7 +195,6 @@ public final class Group extends Element {
      * @param group the group object.
      */
     public void addSubGroup(final Group group) {
-        this.subGroups.putIfAbsent(group.getPath(), group);
         this.buffer.addGroup(group);
     }
     
@@ -221,11 +217,7 @@ public final class Group extends Element {
      */
     public void deleteSubGroup(final String groupName) {
         final String absolutePath = this.path + groupName + "/";
-        if (this.subGroups.containsKey(absolutePath) == false) {
-            throw new GcfException("no such group to delete: \"" + getPath() + groupName + "/\"");
-        }
-        
-        this.subGroups.remove(absolutePath);
+        this.buffer.deleteSubGroup(absolutePath);
     }
     
     /**
@@ -377,7 +369,11 @@ public final class Group extends Element {
         // Group footer
         parser.match(TokenType.GROUP_LBRACE);
         parser.match(TokenType.GROUP_FSLASH);
-        parser.match(TokenType.GROUP_NAME);
+        final String closingGroupname = parser.match(TokenType.GROUP_NAME);
+        if (this.name.equals(closingGroupname) == false) {
+            throw new GcfException("group \""+this.path+"\" not correctly closed");
+        }
+        
         parser.match(TokenType.GROUP_RBRACE);
         
         // add this group to the global data container
@@ -399,7 +395,6 @@ public final class Group extends Element {
             else if (parser.lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
                      !parser.LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 final Group subGroup = new Group(this.path,parser,this.buffer,this.groupChanger);
-                this.subGroups.putIfAbsent(subGroup.getPath(),subGroup);
             }
             else if (parser.lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
                      parser.LT(2).getType().equals(TokenType.GROUP_FSLASH)) {

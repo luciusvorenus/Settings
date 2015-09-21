@@ -86,7 +86,7 @@ public class Settings {
      * @return collection of the top level groups.
      */
     public Collection<Group> childGroups() {
-        return this.buffer.getGroup("/").childGroups();
+        return this.buffer.subGroupsForPath("/");
     }
 
     /**
