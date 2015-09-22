@@ -201,7 +201,7 @@ class GcfLexer extends Lexer {
             sb.append(c);
             
             if (c == '\n') {
-                throw new Error("string not correctly closed");
+                throw new GcfException("string not correctly closed");
             }
             
             consume();
