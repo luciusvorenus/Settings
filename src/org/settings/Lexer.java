@@ -50,9 +50,9 @@ abstract class Lexer {
                 sb.append(reader.readLine()).append("\n");
             }
         } catch(FileNotFoundException ex) {
-            throw new GcfException("cannot find file to read");
+            throw new GcfException("cannot find file to read: "+file.getAbsolutePath());
         } catch(IOException ex) {
-            throw new GcfException("IO problem occurred");
+            throw new GcfException("IO problem occurred while reading "+file.getAbsolutePath());
         }
         return sb.toString();
     }

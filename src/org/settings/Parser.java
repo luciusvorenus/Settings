@@ -71,7 +71,7 @@ class Parser {
             return text;
         }
         
-        throw new GcfException("expecting "+type.getLongName()+"; found "+lookahead);
+        throw new GcfException("expecting "+type+"; found \'"+lookahead.getText()+"\'");
     }
     
     /**

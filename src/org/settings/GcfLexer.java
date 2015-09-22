@@ -76,7 +76,7 @@ class GcfLexer extends Lexer {
                             return value(c);
                         }
                     }
-                    throw new GcfException("invalid character \'"+c+"\'");
+                    throw new GcfException("invalid character while parsing: \'"+c+"\'");
             }
         }
         return new Token(TokenType.EOF, "EOF");

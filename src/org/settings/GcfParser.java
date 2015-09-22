@@ -50,7 +50,7 @@ class GcfParser extends Parser {
                 group();
             }
             else {
-                throw new GcfException("wrong token: " + lookahead);
+                throw new GcfException("expecting group. found " + lookahead);
             }
         }
     }

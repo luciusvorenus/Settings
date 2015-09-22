@@ -401,7 +401,7 @@ public final class Group extends Element {
                 break;
             }
             else {
-                throw new GcfException("wrong token: " + parser.lookahead);
+                throw new GcfException("expecting subgroup or keyvalue. found " + parser.lookahead);
             }
         }
     }
