@@ -8,7 +8,13 @@ import java.io.File;
  * implements its <code>nextToken</code> method, to 
  * tokenize the string gcf file format.
  */
-class GcfLexer extends Lexer {
+public class GcfLexer extends Lexer {
+    
+    /* flag when token is a global key */
+    private boolean parsingGlobalKeys = true;
+    
+    /* flag when value is a global var */
+    private boolean parsingGlobalVar = false;
     
     /* flag when token is the group name */
     private boolean parsingGroupName = false;
@@ -33,7 +39,7 @@ class GcfLexer extends Lexer {
      * @return 
      */
     @Override
-    Token nextToken() {
+    public Token nextToken() {
         while(c != EOF) {
             switch(c) {
                 case ' ':
@@ -47,6 +53,7 @@ class GcfLexer extends Lexer {
                     continue;
                 case '[': 
                     consume(); 
+                    parsingGlobalKeys = false; // global keys must come before any group
                     parsingGroupName = true;
                     parsingKey = false;
                     parsingValue = false;
@@ -65,16 +72,31 @@ class GcfLexer extends Lexer {
                     parsingKey = false;
                     parsingValue = true;
                     return new Token(TokenType.EQUAL_SIGN, "=");
+                case '$':
+                    consume();
+                    return new Token(TokenType.GLOBAR_VAR_SYMBOL, "$");
+                case '{':
+                    consume();
+                    parsingGlobalVar = true;
+                    return new Token(TokenType.GLOBAL_VAR_LBRACE, "{");
+                case '}':
+                    consume();
+                    parsingKey = true;
+                    parsingValue = false;
+                    parsingGlobalVar = false;
+                    return new Token(TokenType.GLOBAL_VAR_RBRACE, "}");
                 default:
                     // Check if it is a letter, start of string or start of number
                     if (Character.isLetter(c) || c =='"' || isNumber(c) || c == '-' || c == '+') {
                         if (parsingGroupName)  return new Token(TokenType.GROUP_NAME,groupnameText());
                         else if (parsingKey)   return new Token(TokenType.KEY, keyText());
+                        else if (parsingGlobalVar) return new Token(TokenType.GLOBAL_VAR_NAME, globalVarText());
                         else if (parsingValue) {
                             parsingKey = true;
                             parsingValue = false;
                             return value(c);
                         }
+                        else if (parsingGlobalKeys) return new Token(TokenType.KEY, keyText());
                     }
                     throw new GcfException("invalid character while parsing: \'"+c+"\'");
             }
@@ -125,6 +147,10 @@ class GcfLexer extends Lexer {
      * @return the key text
      */
     private String keyText() {
+//        if (Character.isLetter(c) == false) {
+//            throw new GcfException("key must start with a letter, found \'"+c+"\'");
+//        }
+        
         StringBuilder sb = new StringBuilder();
         do {
             sb.append(c);
@@ -213,7 +239,7 @@ class GcfLexer extends Lexer {
     }
     
     /**
-     * Parses the text for a bollean value.
+     * Parses the text for a boolean value.
      * A boolean value can only be "true" or "false".
      * In this application we also accept "True", "TRUE" and 
      * "False", "FALSE".
@@ -229,6 +255,27 @@ class GcfLexer extends Lexer {
             sb.append(c);
             consume();
         } while(Character.isLetter(c));
+        return sb.toString();
+    }
+    
+    /**
+     * Parses the text of global variable.
+     * It parses until if finds the symbol '}'.
+     * @return the name of the variable
+     */
+    private String globalVarText() {
+        final StringBuilder sb = new StringBuilder();
+        do {
+            if (!Character.isLetter(c) && !isNumber(c) && c!='_') {
+                throw new GcfException("global variable can only contain letters, numbers and \'_\'. found "+c);
+            }
+            if (c == '}') {
+                break;
+            }
+            sb.append(c);
+            consume();
+            
+        } while(Character.isLetter(c) || isNumber(c) || c=='_');
         return sb.toString();
     }
 

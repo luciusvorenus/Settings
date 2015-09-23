@@ -389,7 +389,7 @@ public final class Group extends Element {
     private void groupContent(final Parser parser) {
         while(!parser.lookahead.getType().equals(TokenType.EOF)) {
             if (parser.lookahead.getType().equals(TokenType.KEY)) {
-                final KeyValue kv = new KeyValue(getPath(),parser);
+                final KeyValue kv = new KeyValue(getPath(),this.buffer,parser);
                 this.keys.putIfAbsent(kv.getKey(), kv.getValue());
             }
             else if (parser.lookahead.getType().equals(TokenType.GROUP_LBRACE) && 

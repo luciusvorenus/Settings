@@ -17,8 +17,8 @@ public class Token {
         this.text = text;
     }
     
-    TokenType getType() {return this.type;}
-    String    getText() {return this.text;} 
+    public TokenType getType() {return this.type;}
+    public String    getText() {return this.text;} 
 
     @Override
     public String toString() {

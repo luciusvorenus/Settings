@@ -45,12 +45,16 @@ class GcfParser extends Parser {
      */
     void body() {
         while(!lookahead.getType().equals(TokenType.EOF)) {
-            if (lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
+            if (lookahead.getType().equals(TokenType.KEY)) {
+                final KeyValue kv = new KeyValue("/", this.dataBuffer, this);
+                this.dataBuffer.addGlobalKey(kv.getKey(), kv.getValue());
+            }
+            else if (lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
                 !LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 group();
             }
             else {
-                throw new GcfException("expecting group. found " + lookahead);
+                throw new GcfException("expecting global key or group. found " + lookahead);
             }
         }
     }

@@ -18,6 +18,9 @@ import java.util.Objects;
  */
 final class KeyValue extends Element {
     
+    /* Reference to the data buffer */
+    private final Buffer buffer;
+    
     /* The key */
     private String key;
     
@@ -32,9 +35,10 @@ final class KeyValue extends Element {
      * @param buffer reference to the data buffer
      * @throws  GcfException
      */
-    /*package-privat*/ KeyValue(final String parent, final Parser parser) throws GcfException {
+    /*package-privat*/ KeyValue(final String parent, final Buffer buffer, final Parser parser) throws GcfException {
         this.parent = parent;
         this.path = parent;
+        this.buffer = buffer;
         parse(parser);
     }
     
@@ -70,14 +74,39 @@ final class KeyValue extends Element {
      */
     @Override
     /*package-privat*/ void parse(final Parser parser) throws GcfException {
-        final String keyStr = parser.match(TokenType.KEY);
+        this.key = parser.match(TokenType.KEY);
         parser.match(TokenType.EQUAL_SIGN);
-        final String valueStr = parser.match(TokenType.VALUE);
         
-        this.key = keyStr;
-        this.value = parseValue(valueStr);
+        if (parser.lookahead.getType().equals(TokenType.GLOBAR_VAR_SYMBOL)) {
+            globalVar(parser);
+        }
+        else {
+            normalValue(parser);
+        }
         
         this.name = this.key;
+    }
+    
+    /**
+     * Parses the value in case it is a global variable reference.
+     * @param parser reference to the parser
+     */
+    private void globalVar(final Parser parser) {
+        parser.match(TokenType.GLOBAR_VAR_SYMBOL);
+        parser.match(TokenType.GLOBAL_VAR_LBRACE);
+        final String globalKey = parser.match(TokenType.GLOBAL_VAR_NAME);
+        this.value = this.buffer.getGlobalValue(globalKey);
+        parser.match(TokenType.GLOBAL_VAR_RBRACE);
+    }
+    
+    /**
+     * Parses the value in case it is a normal value.
+     * A normal value is number, a string or a boolean.
+     * @param parser reference to the parser
+     */
+    private void normalValue(final Parser parser) {
+        final String valueStr = parser.match(TokenType.VALUE);
+        this.value = parseValue(valueStr);
     }
     
     /**
