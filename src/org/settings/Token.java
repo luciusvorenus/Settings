@@ -7,7 +7,7 @@ package org.settings;
  * or any text, e.g. the text in the groupname.
  * 
  */
-public class Token {
+class Token {
     
     private final TokenType type;
     private final String    text;
@@ -17,8 +17,8 @@ public class Token {
         this.text = text;
     }
     
-    public TokenType getType() {return this.type;}
-    public String    getText() {return this.text;} 
+    TokenType getType() {return this.type;}
+    String    getText() {return this.text;} 
 
     @Override
     public String toString() {

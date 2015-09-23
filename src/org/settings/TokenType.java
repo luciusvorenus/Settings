@@ -3,7 +3,7 @@ package org.settings;
 /**
  * Definition of all important tokens in the gcf file format.
  */
-public enum TokenType {
+enum TokenType {
     
     EOF("EOF","EOF"),
     
@@ -38,11 +38,11 @@ public enum TokenType {
         this.symbol = symbol;
     }
     
-    public String getLongName() {
+    String getLongName() {
         return this.longName;
     }
 
-    public String getSymbol() {
+    String getSymbol() {
         return this.symbol;
     }
 

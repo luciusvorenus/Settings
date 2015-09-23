@@ -8,7 +8,7 @@ import java.io.File;
  * implements its <code>nextToken</code> method, to 
  * tokenize the string gcf file format.
  */
-public class GcfLexer extends Lexer {
+class GcfLexer extends Lexer {
     
     /* flag when token is a global key */
     private boolean parsingGlobalKeys = true;
@@ -29,7 +29,7 @@ public class GcfLexer extends Lexer {
      * Create a Lexer to tokenize the gcf file format.
      * @param file the file whose content shall be tokenizied
      */
-    public GcfLexer(final File file) {
+    GcfLexer(final File file) {
         super(file);
     }
 
@@ -39,7 +39,7 @@ public class GcfLexer extends Lexer {
      * @return 
      */
     @Override
-    public Token nextToken() {
+    Token nextToken() {
         while(c != EOF) {
             switch(c) {
                 case ' ':
