@@ -7,8 +7,13 @@ import java.util.Map;
 
 /**
  * This class represents a group in the gcf file format.
- * A group has a name, and can contain child key/values and 
- * sub groups (which in turn can themselves contain subgroups, etc).
+ * A group has a name, and offers access to its child key/values and 
+ * sub groups (which in turn can themselves contain subgroups, etc),
+ * if present.<br>
+ * Furthermore the Group class offers functionality to change
+ * the values of existing keys, delete existing keys, create 
+ * new key and respective values, as well as creating or deleting 
+ * subgroups.
  */
 public final class Group extends Element {
     
