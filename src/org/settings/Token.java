@@ -22,7 +22,6 @@ class Token {
 
     @Override
     public String toString() {
-//        return "<'"+this.text+"',"+this.type.getLongName()+">";
         return "<"+this.type.getLongName()+",\'"+this.text+"\'>";
     }
 }
