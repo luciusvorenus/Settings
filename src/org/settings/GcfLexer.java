@@ -73,51 +73,51 @@ class GcfLexer extends Lexer {
                     parsingGroupName = true;
                     parsingKey = false;
                     parsingValue = false;
-                    return new Token(TokenType.GROUP_LBRACE, "[");
+                    return new Token(TokenType.GROUP_LBRACE, "[", lineNumber);
                 case ']': 
                     consume(); 
                     parsingGroupName = false;
                     parsingKey = true;
                     parsingValue = false;
-                    return new Token(TokenType.GROUP_RBRACE, "]");
+                    return new Token(TokenType.GROUP_RBRACE, "]", lineNumber);
                 case '/':
                     consume();
-                    return new Token(TokenType.GROUP_FSLASH, "/");
+                    return new Token(TokenType.GROUP_FSLASH, "/", lineNumber);
                 case '=':
                     consume();
                     parsingKey = false;
                     parsingValue = true;
-                    return new Token(TokenType.EQUAL_SIGN, "=");
+                    return new Token(TokenType.EQUAL_SIGN, "=", lineNumber);
                 case '$':
                     consume();
-                    return new Token(TokenType.GLOBAR_VAR_SYMBOL, "$");
+                    return new Token(TokenType.GLOBAR_VAR_SYMBOL, "$", lineNumber);
                 case '{':
                     consume();
                     parsingGlobalVar = true;
-                    return new Token(TokenType.GLOBAL_VAR_LBRACE, "{");
+                    return new Token(TokenType.GLOBAL_VAR_LBRACE, "{", lineNumber);
                 case '}':
                     consume();
                     parsingKey = true;
                     parsingValue = false;
                     parsingGlobalVar = false;
-                    return new Token(TokenType.GLOBAL_VAR_RBRACE, "}");
+                    return new Token(TokenType.GLOBAL_VAR_RBRACE, "}", lineNumber);
                 default:
                     // Check if it is a letter, start of string or start of number
                     if (Character.isLetter(c) || c =='"' || isNumber(c) || c == '-' || c == '+') {
-                        if (parsingGroupName)  return new Token(TokenType.GROUP_NAME,groupnameText());
-                        else if (parsingKey)   return new Token(TokenType.KEY, keyText());
-                        else if (parsingGlobalVar) return new Token(TokenType.GLOBAL_VAR_NAME, globalVarText());
+                        if (parsingGroupName)  return new Token(TokenType.GROUP_NAME,groupnameText(), lineNumber);
+                        else if (parsingKey)   return new Token(TokenType.KEY, keyText(), lineNumber);
+                        else if (parsingGlobalVar) return new Token(TokenType.GLOBAL_VAR_NAME, globalVarText(), lineNumber);
                         else if (parsingValue) {
                             parsingKey = true;
                             parsingValue = false;
                             return value(c);
                         }
-                        else if (parsingGlobalKeys) return new Token(TokenType.KEY, keyText());
+                        else if (parsingGlobalKeys) return new Token(TokenType.KEY, keyText(), lineNumber);
                     }
-                    throw new GcfException("invalid character while parsing: \'"+c+"\'");
+                    throw new GcfException("invalid character while parsing: \'"+c+"\' at line "+lineNumber);
             }
         }
-        return new Token(TokenType.EOF, "EOF");
+        return new Token(TokenType.EOF, "EOF", lineNumber);
     }
     
     /**
@@ -163,9 +163,9 @@ class GcfLexer extends Lexer {
      * @return the key text
      */
     private String keyText() {
-//        if (Character.isLetter(c) == false) {
-//            throw new GcfException("key must start with a letter, found \'"+c+"\'");
-//        }
+        if (Character.isLetter(c) == false) {
+            throw new GcfException("key must start with a letter, found \'"+c+"\' at line "+lineNumber);
+        }
         
         StringBuilder sb = new StringBuilder();
         do {
@@ -203,7 +203,7 @@ class GcfLexer extends Lexer {
         else {
             valueStr = booleanValue();
         }
-        return new Token(TokenType.VALUE,valueStr);
+        return new Token(TokenType.VALUE,valueStr,lineNumber);
     }
     
     /**
@@ -243,7 +243,7 @@ class GcfLexer extends Lexer {
             sb.append(c);
             
             if (c == '\n') {
-                throw new GcfException("string not correctly closed");
+                throw new GcfException("string not correctly closed at line "+lineNumber);
             }
             
             consume();
@@ -283,7 +283,7 @@ class GcfLexer extends Lexer {
         final StringBuilder sb = new StringBuilder();
         do {
             if (!Character.isLetter(c) && !isNumber(c) && c!='_') {
-                throw new GcfException("global variable can only contain letters, numbers and \'_\'. found "+c);
+                throw new GcfException("global variable can only contain letters, numbers and \'_\', found "+c+ " at line "+lineNumber);
             }
             if (c == '}') {
                 break;

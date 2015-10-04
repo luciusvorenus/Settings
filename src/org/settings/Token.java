@@ -27,14 +27,17 @@ class Token {
     
     private final TokenType type;
     private final String    text;
+    private final int       lineNumber;
     
-    public Token(final TokenType type, final String text) {
+    Token(final TokenType type, final String text, final int lineNumber) {
         this.type = type;
         this.text = text;
+        this.lineNumber = lineNumber;
     }
     
     TokenType getType() {return this.type;}
     String    getText() {return this.text;} 
+    int       getLineNumber() {return this.lineNumber;}
 
     @Override
     public String toString() {

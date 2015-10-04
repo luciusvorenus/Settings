@@ -70,7 +70,7 @@ class GcfParser extends Parser {
                 group();
             }
             else {
-                throw new GcfException("expecting global key or group. found " + lookahead);
+                throw new GcfException("expecting global key or group, found " + lookahead + " at line "+lookahead.getLineNumber());
             }
         }
     }

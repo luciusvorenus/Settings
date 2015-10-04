@@ -43,6 +43,8 @@ abstract class Lexer {
     
     /* Current character in the input text */
     char c;
+    
+    int lineNumber;
 
     /**
      * Construct a lexer
@@ -51,6 +53,7 @@ abstract class Lexer {
     Lexer(final File file) {
         this.input = readFileContent(file);
         c = input.charAt(p);
+        lineNumber = 1;
     }
     
     /**
@@ -91,6 +94,7 @@ abstract class Lexer {
      * so as to terminate the execution.
      */
     void consume() {
+        if (c=='\n') lineNumber++;
         p++;
         if (p >= input.length()) c = EOF;
         else c = input.charAt(p);

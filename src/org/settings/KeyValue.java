@@ -122,7 +122,7 @@ final class KeyValue extends Element {
      */
     private void normalValue(final Parser parser) {
         final String valueStr = parser.match(TokenType.VALUE);
-        this.value = parseValue(valueStr);
+        this.value = parseValue(valueStr,parser.lookahead.getLineNumber());
     }
     
     /**
@@ -132,7 +132,7 @@ final class KeyValue extends Element {
      * @return the parsed value as an <code>Object</code>
      * @throws GcfException
      */
-    /*package-privat*/ Object parseValue(final String strValue) throws GcfException {
+    /*package-privat*/ Object parseValue(final String strValue, final int lineNumber) throws GcfException {
         Object obj = null;
         try {
             obj = Integer.parseInt(strValue);
@@ -148,7 +148,7 @@ final class KeyValue extends Element {
                     } catch(NumberFormatException ex4) {
                         if (strValue.length()>0) {
                             if (!strValue.startsWith("\"") || !strValue.endsWith("\"")) {
-                                throw new GcfException("mal formed string");
+                                throw new GcfException("mal formed string at line "+(lineNumber-1));
                             }
                             obj = strValue.substring(1, strValue.length()-1).trim();
                         }

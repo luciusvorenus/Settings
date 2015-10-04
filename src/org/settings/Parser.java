@@ -87,7 +87,7 @@ class Parser {
             return text;
         }
         
-        throw new GcfException("expecting "+type+"; found \'"+lookahead.getText()+"\'");
+        throw new GcfException("expecting "+type+"; found \'"+lookahead.getText()+"\'. line "+lookahead.getLineNumber());
     }
     
     /**
