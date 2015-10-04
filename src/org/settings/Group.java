@@ -392,7 +392,7 @@ public final class Group extends Element {
         parser.match(TokenType.GROUP_FSLASH);
         final String closingGroupname = parser.match(TokenType.GROUP_NAME);
         if (this.name.equals(closingGroupname) == false) {
-            throw new GcfException("group \""+this.path+"\" not correctly closed");
+            throw new GcfException("group \""+this.path+"\" not correctly closed at line "+parser.lookahead.getLineNumber());
         }
         
         parser.match(TokenType.GROUP_RBRACE);
@@ -422,7 +422,7 @@ public final class Group extends Element {
                 break;
             }
             else {
-                throw new GcfException("expecting subgroup or keyvalue. found " + parser.lookahead);
+                throw new GcfException("expecting subgroup or keyvalue, found " + parser.lookahead+ " at line "+parser.lookahead.getLineNumber());
             }
         }
     }
