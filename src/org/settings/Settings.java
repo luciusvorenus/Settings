@@ -19,6 +19,7 @@ package org.settings;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Main class to handle gcf-configutation files.<br>
@@ -108,26 +109,18 @@ public class Settings {
     private final GroupChanger groupChanger;
     
     /**
-     * Create <code>Settings</code> instance from 
-     * a <code>File</code> object.
-     * @param file the <code>File</code> object representing the config file
-     */
-    public Settings(final File file) {
-        checkFileEnding(file.getAbsolutePath());
-        this.file = file;
-        this.buffer = new Buffer();
-        this.groupChanger = new GroupChanger(this.buffer);
-        
-        open();
-    }
-    
-    /**
      * Creates a <code>Settings</code> instance from the absolute 
      * path of the config file.
      * @param absFilePath the absolute file of the config file
      */
     public Settings(final String absFilePath) {
-        this(new File(absFilePath));
+        Objects.requireNonNull(absFilePath, "file object is null");
+        checkFileEnding(absFilePath);
+        this.file = new File(absFilePath);
+        this.buffer = new Buffer();
+        this.groupChanger = new GroupChanger(this.buffer);
+        
+        open();
     }
     
     /**
