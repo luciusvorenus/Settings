@@ -51,8 +51,12 @@ class GcfLexer extends Lexer {
 
     /**
      * Gets the next token from the stream of characters.
-     * 
-     * @return 
+     * Comments and spaces are ignored.<br>
+     * The boolean flags are intended to help the lexer
+     * recognize with tokentype it is handling
+     * at a given moment. For example a groupname and a key
+     * are both simply text but have different tokentypes.
+     * @return the next token
      */
     @Override
     Token nextToken() {
