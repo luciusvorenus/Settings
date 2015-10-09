@@ -48,8 +48,7 @@ final class Buffer {
           * But is important to list all top level groups 
           * and to hold the global keys.
           */
-         final Group rootGroup = new Group("", "/");
-         rootGroup.setBuffer(this);
+         final Group rootGroup = new Group("", "/", this);
          this.content.put(rootGroup.getName(), rootGroup);
     }
     

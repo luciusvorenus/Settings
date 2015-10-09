@@ -56,6 +56,17 @@ public final class Group extends Element {
         this.groupChanger = groupChanger;
         parse(parser);
     }
+
+    /**
+     * Package privat constructor to create a Group while parsing.
+     * @param parent the path of the parent group
+     * @param parser refrence to the parser
+     * @param buffer reference to the data buffer
+     */
+    Group(final String parent, final String name, final Buffer buffer) {
+        this(parent, name);
+        this.buffer = buffer;
+    }
     
     /**
      * Creates a group.
@@ -66,15 +77,6 @@ public final class Group extends Element {
         this.parent = parent;
         this.name   = name;
         this.path   = parent + name + (parent.isEmpty()?"":"/");
-    }
-    
-    /**
-     * Utility method to set the buffer when the group is 
-     * created using the public method.
-     * @param buffer reference to the buffer
-     */
-    void setBuffer(final Buffer buffer) {
-        this.buffer = buffer;
     }
     
     /**
