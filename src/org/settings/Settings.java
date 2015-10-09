@@ -48,8 +48,8 @@ import java.util.Objects;
  * </pre>
  * 
  * The configuration data is saved as key/value pairs within groups.<br>
- * The key names can be composed of letters, numbers and underscores, but
- * must start with a letter.<br>
+ * The key names can be composed of letters, numbers, underscores,
+ * dots and dashes, but must start with a letter.<br>
  * The values can be integers, floats (with a dot as the decimal separator), 
  * booleans, strings (enclosed in double quotes) or a reference to a 
  * global variable.<br>
