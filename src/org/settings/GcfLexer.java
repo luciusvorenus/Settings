@@ -110,7 +110,7 @@ class GcfLexer extends Lexer {
                     if (Character.isLetter(c) || c =='"' || isNumber(c) || c == '-' || c == '+') {
                         if (parsingGroupName)  return new Token(TokenType.GROUP_NAME,groupnameText(), lineNumber);
                         else if (parsingKey)   return new Token(TokenType.KEY, keyText(), lineNumber);
-                        else if (parsingGlobalVar) return new Token(TokenType.GLOBAL_VAR_NAME, globalVarText(), lineNumber);
+                        else if (parsingGlobalVar) return new Token(TokenType.GLOBAL_VAR_NAME, keyText(), lineNumber);
                         else if (parsingValue) {
                             parsingKey = true;
                             parsingValue = false;
@@ -152,11 +152,11 @@ class GcfLexer extends Lexer {
      * @return the groupname text
      */
     private String groupnameText() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         do {
             sb.append(c);
             consume();
-        } while(Character.isLetter(c) || isNumber(c) || c=='_' || c =='-');
+        } while(Character.isLetter(c) || isNumber(c) || c=='_' || c=='-' || c=='.');
         return sb.toString();
     }
     
@@ -171,11 +171,11 @@ class GcfLexer extends Lexer {
             throw new GcfException("key must start with a letter, found \'"+c+"\' at line "+lineNumber);
         }
         
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         do {
             sb.append(c);
             consume();
-        } while(Character.isLetter(c) || isNumber(c) || c=='_');
+        } while(Character.isLetter(c) || isNumber(c) || c=='_' || c=='-' || c=='.');
         return sb.toString();
     }
     
@@ -218,7 +218,7 @@ class GcfLexer extends Lexer {
      * @return text of the numeric value
      */
     private String numberValue(final char ch) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(ch);
         consume();
         while(isNumber(c) || c=='.') {
@@ -270,33 +270,11 @@ class GcfLexer extends Lexer {
      * @return text of a boolean value
      */
     private String booleanValue() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         do {
             sb.append(c);
             consume();
         } while(Character.isLetter(c));
         return sb.toString();
     }
-    
-    /**
-     * Parses the text of global variable.
-     * It parses until if finds the symbol '}'.
-     * @return the name of the variable
-     */
-    private String globalVarText() {
-        final StringBuilder sb = new StringBuilder();
-        do {
-            if (!Character.isLetter(c) && !isNumber(c) && c!='_') {
-                throw new GcfException("global variable can only contain letters, numbers and \'_\', found "+c+ " at line "+lineNumber);
-            }
-            if (c == '}') {
-                break;
-            }
-            sb.append(c);
-            consume();
-            
-        } while(Character.isLetter(c) || isNumber(c) || c=='_');
-        return sb.toString();
-    }
-
 }
