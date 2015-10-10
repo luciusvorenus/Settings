@@ -55,13 +55,13 @@ With the Settings instance reference one can get access to the configuration
 data and/or the subgroups.
 
 ```java
-# Get a reference to the "Constants" group
+// Get a reference to the "Constants" group
 final Group constGroup = constGroup.getGroup("/Constants/");
 
-# Read a value for the key "string"
+// Read a value for the key "string"
 final String str = constGroup.readString("string");
 
-# Get a reference to the subgroup "Sub"
+// Get a reference to the subgroup "Sub"
 final Group subGroup = constGroup.getGroup("Sub/");
 ```
 
