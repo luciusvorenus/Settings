@@ -8,7 +8,6 @@ data.<br>
 The basic syntax is as follow:<br>
 
 ```
---------- GCF START------------
     global_var = "some var"
 
     # Some multiline
@@ -23,7 +22,6 @@ The basic syntax is as follow:<br>
             nr = 1000
         [/Sub]
     [/Constants]
---------- GCF END -------------
 ```
 
 The configuration data is saved as key/value pairs within groups.<br>
