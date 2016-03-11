@@ -66,7 +66,7 @@ class GcfParser extends Parser {
                 this.dataBuffer.addGlobalKey(kv.getKey(), kv.getValue());
             }
             else if (lookahead.getType().equals(TokenType.GROUP_LBRACE) && 
-                !LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
+                     !LT(2).getType().equals(TokenType.GROUP_FSLASH)) {
                 group();
             }
             else {
