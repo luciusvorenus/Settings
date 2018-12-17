@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package org.settings;
+package gcf.settings;
 
 import java.io.BufferedWriter;
 import java.io.File;
